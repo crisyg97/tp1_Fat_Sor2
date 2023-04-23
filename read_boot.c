@@ -14,7 +14,13 @@ typedef struct {
     unsigned char jmp[3];
     char oem[8];
     unsigned short sector_size; // 2 bytes
-	// {...}  COMPLETAR
+	unsigned char bytes_per_sector;
+    unsigned char sector_per_cluster;
+    unsigned char max_root_entries;
+    unsigned char reserved_sectors;
+    unsigned char fat_size_sectors;
+    unsigned char number_of_fats;
+    unsigned char root_dir_entries;
     unsigned int volume_id;
     char volume_label[11];
     char fs_type[8]; // Type en ascii
@@ -28,7 +34,7 @@ int main() {
     PartitionTable pt[4];
     Fat12BootSector bs;
     
-    fseek(in, ... , SEEK_SET); // Ir al inicio de la tabla de particiones. Completar ...
+    fseek(in, 4 , SEEK_SET); // Ir al inicio de la tabla de particiones. Completar ...
     fread(pt, sizeof(PartitionTable), 4, in); // leo entradas 
     
     for(i=0; i<4; i++) {        
