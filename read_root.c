@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct {
     unsigned char first_byte;
@@ -14,14 +15,22 @@ typedef struct {
     unsigned char jmp[3];
     char oem[8];
     unsigned short sector_size;
-	unsigned char bytes_per_sector;
-    unsigned char sector_per_cluster;
-    unsigned char max_root_entries;
-    unsigned char reserved_sectors;
-    unsigned char fat_size_sectors;
-    unsigned char number_of_fats;
     unsigned char root_dir_entries;
-    unsigned int volume_id;
+    unsigned char sector_per_cluster;
+    unsigned short reserved_sectors;
+    unsigned char number_of_fats;
+    unsigned short max_root_entries;
+    unsigned short total_sectors_small;
+    unsigned char media_type;
+    unsigned short fat_size_sectors;
+    unsigned short sectors_per_track;
+    unsigned short number_of_heads;
+    unsigned int hidden_sectors;
+    unsigned int total_sectors_large;
+    unsigned char drive_number;
+    unsigned char current_head;
+
+    unsigned int volume_id[4];
     char volume_label[11];
     char fs_type[8];
     char boot_code[448];
@@ -32,7 +41,13 @@ typedef struct {
 	unsigned char filename[8];
     unsigned char extension[3];
     unsigned char attributes; //read-only, hidden, or a system file
-    unsigned char reserved[10];
+    unsigned char reserved[10];   
+    unsigned short creation_time;
+    unsigned short creation_date;
+    unsigned short last_access_date;
+    unsigned short reserved2;
+    unsigned short modified_time;
+    unsigned short modified_date;
     unsigned short cluster; //first cluster of the file or directory
     unsigned int size;
 } __attribute((packed)) Fat12Entry;
@@ -44,13 +59,16 @@ void print_file_info(Fat12Entry *entry) {
     case 0xE5: 
         printf("Archivo borrado: [?%.7s.%.3s]\n", entry->filename, entry->extension);
         return;
-    case ...: //si no va 0xE5. que va??
+    /*case ...: //si no va 0xE5. que va??
         printf("Archivo que comienza con 0xE5: [%c%.7s.%.3s]\n", 0xE5, entry->filename, entry->extension);
         break;
+    */
     case 0x2E:
         printf("Directorio: [%.8s.%.3s]\n", entry->filename, entry->extension);
         break;
     default:
+        if(strncmp((char *)entry->extension, "TXT", 3) == 0)
+            printf("Archivo txt: [%.8s.%.3s]\n", entry->filename, entry->extension);
         printf("Archivo: [%.8s.%.3s]\n", entry->filename, entry->extension);
     }
     
@@ -63,7 +81,8 @@ int main() {
     Fat12BootSector bs;
     Fat12Entry entry;
    
-	//{...} Completar 
+	fseek(in, 0x01BE , SEEK_SET); 
+    fread(pt, sizeof(PartitionTable), 4, in);
     
     for(i=0; i<4; i++) {        
         if(pt[i].partition_type == 1) {
@@ -78,13 +97,11 @@ int main() {
     }
     
     fseek(in, 0, SEEK_SET);
-	//{...} Leo boot sector
     
     printf("En  0x%X, sector size %d, FAT size %d sectors, %d FATs\n\n", 
            ftell(in), bs.sector_size, bs.fat_size_sectors, bs.number_of_fats);
            
-    fseek(in, (bs.reserved_sectors-1 + bs.fat_size_sectors * bs.number_of_fats) *
-          bs.sector_size, SEEK_CUR);
+    fseek(in, (bs.reserved_sectors-1 + bs.fat_size_sectors * bs.number_of_fats) * bs.sector_size, SEEK_CUR);
     
     printf("Root dir_entries %d \n", bs.root_dir_entries);
     for(i=0; i<bs.root_dir_entries; i++) {
