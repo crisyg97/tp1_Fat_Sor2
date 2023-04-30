@@ -63,7 +63,20 @@ int main() {
     printf("  Jump code: %02X:%02X:%02X\n", bs.jmp[0], bs.jmp[1], bs.jmp[2]);
     printf("  OEM code: [%.8s]\n", bs.oem);
     printf("  sector_size: %d\n", bs.sector_size);
-	// {...} COMPLETAR
+    printf("  sector_per_cluster: %huu\n", bs.sector_per_cluster);
+    printf("  reserved_sectors: %d\n", bs.reserved_sectors);
+    printf("  number_of_fats: %huu\n", bs.number_of_fats);
+    printf("  root_dir_entries: %d\n", bs.root_dir_entries);
+    printf("  sector_volumen: %d\n", bs.sector_volumen);
+    printf("  descriptor: %huu\n", bs.descriptor);
+    printf("  fat_size_sectors: %d\n", bs.fat_size_sectors);
+    printf("  sector_per_track: %d\n", bs.sector_per_track);
+    printf("  headers: %d\n", bs.headers);
+    printf("  sector_hidden: %u\n", bs.sector_hidden);
+    printf("  sector_partition: %u\n", bs.sector_partition);
+    printf("  physical_device: %huu\n", bs.physical_device);
+    printf("  current_header: %huu\n", bs.current_header);
+    printf("  firmware_version: %huu\n", bs.firmware_version);
     printf("  volume_id: 0x%08X\n", bs.volume_id);
     printf("  Volume label: [%.11s]\n", bs.volume_label);
     printf("  Filesystem type: [%.8s]\n", bs.fs_type);
