@@ -13,14 +13,21 @@ typedef struct {
 typedef struct {
     unsigned char jmp[3];
     char oem[8];
-    unsigned short sector_size; // 2 bytes
-	unsigned char bytes_per_sector;
+    unsigned short sector_size;
     unsigned char sector_per_cluster;
-    unsigned char max_root_entries;
-    unsigned char reserved_sectors;
-    unsigned char fat_size_sectors;
+    unsigned short reserved_sectors;
     unsigned char number_of_fats;
-    unsigned char root_dir_entries;
+    unsigned short root_dir_entries;
+    unsigned short sector_volumen;
+    unsigned char descriptor;
+    unsigned short fat_size_sectors;
+    unsigned short sector_per_track;
+    unsigned short headers;
+    unsigned int sector_hidden;
+    unsigned int sector_partition;
+    unsigned char physical_device;
+    unsigned char current_header;
+    unsigned char firmware_version;
     unsigned int volume_id;
     char volume_label[11];
     char fs_type[8]; // Type en ascii

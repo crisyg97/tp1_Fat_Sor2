@@ -15,20 +15,20 @@ typedef struct {
     unsigned char jmp[3];
     char oem[8];
     unsigned short sector_size;
-    unsigned char sector_cluster;
+    unsigned char sector_per_cluster;
     unsigned short reserved_sectors;
     unsigned char number_of_fats;
     unsigned short root_dir_entries;
     unsigned short sector_volumen;
     unsigned char descriptor;
     unsigned short fat_size_sectors;
-    unsigned short sector_track;
+    unsigned short sector_per_track;
     unsigned short headers;
     unsigned int sector_hidden;
     unsigned int sector_partition;
     unsigned char physical_device;
     unsigned char current_header;
-    unsigned char firm;
+    unsigned char firmware_version;
     unsigned int volume_id;
     char volume_label[11];
     char fs_type[8];
@@ -42,14 +42,14 @@ typedef struct {
     unsigned char extension[3];
     unsigned char attributes[1];
     unsigned char reserved;
-    unsigned char created_time_seconds;
-    unsigned char created_time_hours_minutes_seconds[2];
+    unsigned char created_time;
+    unsigned char created_date[2];
     unsigned char created_day[2];
     unsigned char accessed_day[2];
-    unsigned char cluster_highbytes_address[2];
-    unsigned char written_time[2];
-    unsigned char written_day[2];
-    unsigned short cluster_lowbytes_address;
+    unsigned char cluster_HBA[2];
+    unsigned char modified_time[2];
+    unsigned char modified_day[2];
+    unsigned short cluster_LBA;
     unsigned int size_of_file;
 } __attribute((packed)) Fat12Entry;
  
@@ -66,7 +66,7 @@ void print_file_info(Fat12Entry *entry) {
                 printf("Directorio: [%.1s%.7s.%.3s]\n",  entry->filename, entry->nombre, entry->extension);
                 return;
             case 0x20:
-                printf("Archivo: [%.1s%.7s.%.3s]\n",  entry->filename, entry->nombre, entry->extension);
+                printf("Archivo txt: [%.1s%.7s.%.3s]\n",  entry->filename, entry->nombre, entry->extension);
                 return;
         }
     }    
